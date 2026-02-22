@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "737611021173",
+    "project_id": "erythrocheck",
+    "storage_bucket": "erythrocheck.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737611021173:android:feacf25769267948e1313c",
+        "android_client_info": {
+          "package_name": "com.example.erythrocheck"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiq1FreG-Hy_q_mMytPeqPpLEXOY6zPfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737611021173:android:e25c1ca409e14dd9e1313c",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiq1FreG-Hy_q_mMytPeqPpLEXOY6zPfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
