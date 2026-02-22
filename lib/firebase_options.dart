@@ -24,9 +24,9 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for ios - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     authDomain: 'erythrocheck.firebaseapp.com',
     storageBucket: 'erythrocheck.firebasestorage.app',
   );
-
 }

@@ -83,7 +83,8 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 32.0, vertical: 24.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -120,9 +121,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: 16),
                       _buildTextField(
                         controller: _genderController,
-                         label: 'Gender',
-                         icon: Icons.transgender_outlined,
-                         validator: (value) {
+                        label: 'Gender',
+                        icon: Icons.transgender_outlined,
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your gender';
                           }
@@ -139,23 +140,25 @@ class _SignUpPageState extends State<SignUpPage> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your height';
                           }
-                          if (double.tryParse(value) == null || double.parse(value) <= 0) {
+                          if (double.tryParse(value) == null ||
+                              double.parse(value) <= 0) {
                             return 'Please enter a valid height';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
-                       _buildTextField(
+                      _buildTextField(
                         controller: _weightController,
                         label: 'Weight (kg)',
                         icon: Icons.monitor_weight_outlined,
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                           if (value == null || value.isEmpty) {
+                          if (value == null || value.isEmpty) {
                             return 'Please enter your weight';
                           }
-                           if (double.tryParse(value) == null || double.parse(value) <= 0) {
+                          if (double.tryParse(value) == null ||
+                              double.parse(value) <= 0) {
                             return 'Please enter a valid weight';
                           }
                           return null;
@@ -184,8 +187,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         label: 'Password',
                         icon: Icons.lock_outline,
                         obscureText: true,
-                         validator: (value) {
-                          if (value == null || value.isEmpty || value.length < 6) {
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length < 6) {
                             return 'Password must be at least 6 characters';
                           }
                           return null;
@@ -222,7 +227,11 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       const SizedBox(height: 32),
                       if (_isLoading)
-                        const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white),))
+                        const Center(
+                            child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ))
                       else
                         ElevatedButton(
                           onPressed: _signUp,
@@ -231,7 +240,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16)),
                             backgroundColor: Colors.white,
-                            foregroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.primary,
                           ),
                           child: Text('Sign Up',
                               style: GoogleFonts.roboto(
@@ -281,11 +291,13 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 1),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
       ),
       validator: validator,

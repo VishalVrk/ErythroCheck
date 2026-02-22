@@ -1,4 +1,4 @@
-package com.example.myapp
+package com.example.erythrocheck
 
 import io.flutter.embedding.android.FlutterActivity
 

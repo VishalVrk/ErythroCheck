@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart' hide Color;
 import 'dart:math';
@@ -54,7 +53,9 @@ class HistoryPage extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: statusColor,
                 child: Icon(
-                  item['status'] == 'Low' ? Icons.arrow_downward : Icons.arrow_upward,
+                  item['status'] == 'Low'
+                      ? Icons.arrow_downward
+                      : Icons.arrow_upward,
                   color: Colors.white,
                 ),
               ),
@@ -62,11 +63,12 @@ class HistoryPage extends StatelessWidget {
                 '${date.day}/${date.month}/${date.year}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(
-                  'Temp: ${item['temp']}°C, Pulse: ${item['pulse']} BPM'),
+              subtitle:
+                  Text('Temp: ${item['temp']}°C, Pulse: ${item['pulse']} BPM'),
               trailing: Text(
                 item['status'].toString(),
-                style: TextStyle(color: statusColor, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: statusColor, fontWeight: FontWeight.bold),
               ),
             ),
           );

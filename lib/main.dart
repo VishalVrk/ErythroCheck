@@ -5,7 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'signup_page.dart'; // Import the new signup page
+import 'signup_page.dart';
+import 'history_page.dart';
+import 'dietary_page.dart';
+import 'take_new_test_page.dart';
+import 'user_profile_page.dart';
+import 'settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +21,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        Provider<AuthService>(create: (_) => AuthService(FirebaseAuth.instance, FirebaseFirestore.instance)),
+        Provider<AuthService>(
+            create: (_) =>
+                AuthService(FirebaseAuth.instance, FirebaseFirestore.instance)),
         StreamProvider(
           create: (context) => context.read<AuthService>().authStateChanges,
           initialData: null,
@@ -35,9 +42,11 @@ class AuthService {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<String> signIn({required String email, required String password}) async {
+  Future<String> signIn(
+      {required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       return "Signed In";
     } on FirebaseAuthException catch (e) {
       return e.message!;
@@ -55,7 +64,8 @@ class AuthService {
     required String phone,
   }) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -85,7 +95,8 @@ class ThemeProvider with ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
 
   void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    _themeMode =
+        _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
 }
@@ -98,7 +109,8 @@ class MyApp extends StatelessWidget {
     const MaterialColor primarySeedColor = Colors.red;
 
     final TextTheme appTextTheme = TextTheme(
-      displayLarge: GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
+      displayLarge:
+          GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
       titleLarge: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
       bodyMedium: GoogleFonts.openSans(fontSize: 14),
     );
@@ -113,7 +125,8 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: primarySeedColor,
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle:
+            GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -121,7 +134,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle:
+              GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -136,7 +150,8 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[900],
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle:
+            GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -144,7 +159,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: primarySeedColor.shade200,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle:
+              GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -200,14 +216,16 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         setState(() => _isLoading = false);
         if (result != "Signed In") {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(result)));
         }
       }
     }
   }
 
   void _goToSignUp() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const SignUpPage()));
   }
 
   @override
@@ -254,7 +272,8 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.email, color: Colors.white),
+                        prefixIcon:
+                            const Icon(Icons.email, color: Colors.white),
                         filled: true,
                         fillColor: Colors.white.withAlpha(26),
                         border: OutlineInputBorder(
@@ -263,7 +282,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty || !value.contains('@')) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            !value.contains('@')) {
                           return 'Please enter a valid email';
                         }
                         return null;
@@ -286,7 +307,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty || value.length < 6) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.length < 6) {
                           return 'Password must be at least 6 characters';
                         }
                         return null;
@@ -294,7 +317,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 32),
                     if (_isLoading)
-                      const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                      const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white))
                     else
                       Column(
                         children: [
@@ -323,8 +348,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+  final PageController _pageController = PageController();
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    WelcomeScreen(),
+    TakeNewTestPage(),
+    HistoryPage(),
+    DietaryPage(),
+    UserProfilePage(),
+    SettingsPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    _pageController.jumpToPage(index);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +383,9 @@ class HomePage extends StatelessWidget {
         title: const Text('ErythroCheck'),
         actions: [
           IconButton(
-            icon: Icon(themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(themeProvider.themeMode == ThemeMode.dark
+                ? Icons.light_mode
+                : Icons.dark_mode),
             onPressed: () => themeProvider.toggleTheme(),
             tooltip: 'Toggle Theme',
           ),
@@ -345,11 +396,101 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Text(
-          'Welcome!',
-          style: Theme.of(context).textTheme.displayLarge,
-        ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _widgetOptions,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
+            label: 'New Test',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.food_bank),
+            label: 'Dietary',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+      ),
+    );
+  }
+}
+
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text('Non-Invasive Hemoglobin Monitor',
+                      style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 16),
+                  const Text('H1 Value: 0.85',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const Text('Status: Stable',
+                      style: TextStyle(fontSize: 18, color: Colors.green)),
+                  const SizedBox(height: 16),
+                  const Text('Temperature: 36.5 °C'),
+                  const Text('Pulse Rate: 75 BPM'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.add_circle_outline),
+            label: const Text('Take New Test'),
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.history),
+            label: const Text('View History'),
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.food_bank),
+            label: const Text('Dietary Suggestions'),
+          ),
+        ],
       ),
     );
   }

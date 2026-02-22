@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'theme.dart'; // Assuming your theme file is here
 
@@ -100,9 +99,11 @@ class RecommendationCard extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.arrow_right, size: 20, color: Colors.grey),
+                      const Icon(Icons.arrow_right,
+                          size: 20, color: Colors.grey),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(text, style: theme.textTheme.bodyLarge)),
+                      Expanded(
+                          child: Text(text, style: theme.textTheme.bodyLarge)),
                     ],
                   ),
                 )),
