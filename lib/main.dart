@@ -11,6 +11,7 @@ import 'dietary_page.dart';
 import 'take_new_test_page.dart';
 import 'user_profile_page.dart';
 import 'settings_page.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -251,6 +252,8 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Image.asset('assets/logo.png', height: 100),
+                    const SizedBox(height: 20),
                     Text(
                       'ErythroCheck',
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
@@ -444,51 +447,154 @@ class _HomePageState extends State<HomePage> {
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
+  Stream<QuerySnapshot> latestTest(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tests')
+        .orderBy('date', descending: true)
+        .limit(1)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> chartData(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tests')
+        .orderBy('date')
+        .limit(7)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> historyPreview(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tests')
+        .orderBy('date', descending: true)
+        .limit(3)
+        .snapshots();
+  }
+
+  String getStatus(double hb) {
+    if (hb < 12) return "Low";
+    if (hb > 17) return "High";
+    return "Normal";
+  }
+
+  Color getStatusColor(double hb) {
+    if (hb < 12) return Colors.red;
+    if (hb > 17) return Colors.orange;
+    return Colors.green;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text("User not logged in"));
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text('Non-Invasive Hemoglobin Monitor',
-                      style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 16),
-                  const Text('H1 Value: 0.85',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const Text('Status: Stable',
-                      style: TextStyle(fontSize: 18, color: Colors.green)),
-                  const SizedBox(height: 16),
-                  const Text('Temperature: 36.5 °C'),
-                  const Text('Pulse Rate: 75 BPM'),
-                ],
-              ),
+          /// 🔴 LATEST RESULT
+          StreamBuilder<QuerySnapshot>(
+            stream: latestTest(user.uid),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Card(
+                  child: ListTile(
+                    title: Text("Latest Hemoglobin"),
+                    subtitle: Text("No Data"),
+                  ),
+                );
+              }
+
+              double hb =
+                  (snapshot.data!.docs.first['hemoglobin'] as num).toDouble();
+
+              return Card(
+                child: ListTile(
+                  title: const Text("Latest Hemoglobin"),
+                  subtitle: Text(
+                    "${hb.toStringAsFixed(1)} g/dL",
+                    style: const TextStyle(
+                        fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    getStatus(hb),
+                    style: TextStyle(
+                      color: getStatusColor(hb),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: 20),
+
+          /// 📊 MINI TREND CHART
+          SizedBox(
+            height: 200,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: chartData(user.uid),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text("No chart data"));
+                }
+
+                final values = snapshot.data!.docs.map((doc) {
+                  return (doc['hemoglobin'] as num).toDouble();
+                }).toList();
+
+                return LineChart(
+                  LineChartData(
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: List.generate(
+                          values.length,
+                          (i) => FlSpot(i.toDouble(), values[i]),
+                        ),
+                        isCurved: true,
+                        barWidth: 3,
+                        dotData: FlDotData(show: true),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Take New Test'),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.history),
-            label: const Text('View History'),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.food_bank),
-            label: const Text('Dietary Suggestions'),
+
+          const SizedBox(height: 20),
+
+          /// 📜 RECENT HISTORY PREVIEW
+          StreamBuilder<QuerySnapshot>(
+            stream: historyPreview(user.uid),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Text("No history yet");
+              }
+
+              return Column(
+                children: snapshot.data!.docs.map((doc) {
+                  double hb = (doc['hemoglobin'] as num).toDouble();
+
+                  DateTime date = (doc['date'] as Timestamp).toDate();
+
+                  return ListTile(
+                    title: Text("${hb.toStringAsFixed(1)} g/dL"),
+                    subtitle: Text("${date.day}/${date.month}/${date.year}"),
+                  );
+                }).toList(),
+              );
+            },
           ),
         ],
       ),

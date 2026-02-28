@@ -90,6 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Image.asset('assets/logo.png', height: 100),
+                      const SizedBox(height: 20),
                       _buildTextField(
                         controller: _nameController,
                         label: 'Name',
